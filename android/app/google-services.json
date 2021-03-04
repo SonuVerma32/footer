@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "800220217178",
+    "project_id": "footer-72d95",
+    "storage_bucket": "footer-72d95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800220217178:android:abeaf21e4b6bec23497d63",
+        "android_client_info": {
+          "package_name": "vasili.footer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800220217178-a9cplab2uc62br0bbablakooo2s47bpo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vasili.footer",
+            "certificate_hash": "28fe34cea1da903aec08600c9770fd2d0c15498f"
+          }
+        },
+        {
+          "client_id": "800220217178-190b6cmhth63kcfc9pn858m9b15vfkfo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEHdZtf1SkOaiW3op9og56RJfHwMxZT4s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800220217178-190b6cmhth63kcfc9pn858m9b15vfkfo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
