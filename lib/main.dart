@@ -20,13 +20,19 @@ class _MyAppState extends State<MyApp>{
   bool status1 = false;
   SharedPreferences spf;
   loginStatus()async{
-    spf = await SharedPreferences.getInstance();
-       String emaila = spf.getString("email");
-       if(emaila != null){
-         setState(() {
-           status1 = true;
-         });
-       }     
+    try{
+      spf = await SharedPreferences.getInstance();
+      String emaila = spf.getString("email");
+      if(emaila != null){
+        setState(() {
+          status1 = true;
+        });
+      }
+    } catch(e){
+      setState(() {
+        status1 = false;
+      });
+    }
     }
   
   @override
