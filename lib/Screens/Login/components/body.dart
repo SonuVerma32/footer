@@ -1,22 +1,19 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:footer/Components/alreadyHaveAnAccountCheck.dart';
 import 'package:footer/Components/roundedButton.dart';
-import 'package:footer/Components/roundedInputField.dart';
-import 'package:footer/Components/roundedPasswordField.dart';
 import 'package:footer/Components/textFieldContainer.dart';
 import 'package:footer/Screens/Home/home.dart';
 import 'package:footer/Screens/Login/components/background.dart';
+import 'package:footer/Screens/SignUp/components/orDivider.dart';
+import 'package:footer/Screens/SignUp/components/socialIcon.dart';
 import 'package:footer/Screens/SignUp/signUpScreen.dart';
 import 'package:footer/Screens/forgotPassword/forgotPasswordScreen.dart';
 import 'package:footer/apis.dart';
 import 'package:footer/constants.dart';
-import 'package:http/http.dart' as http;
-import 'package:footer/home/homeScreen.dart';
-import 'package:http/http.dart';
+import 'package:footer/socialSignUP1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*class Body extends StatelessWidget {
@@ -113,6 +110,9 @@ class _BodyState extends State<Body> {
              child: Column(
                mainAxisAlignment: MainAxisAlignment.center,
                children: <Widget>[
+                 SizedBox(
+                   height: size.height * 0.03,
+                 ),
                  Text(
                    "Login",
                    style: TextStyle(fontSize: 28,fontWeight: FontWeight.bold),
@@ -198,8 +198,61 @@ class _BodyState extends State<Body> {
                      text: "Login",
                      press: _logIn
                  ),
+                 OrDivider(),
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: <Widget>[
+                     SocialIcon(
+                       iconSrc: "assets/icons/facebook-1.svg",
+                       press: (){},
+                     ),
+                     SocialIcon(
+                       iconSrc: "assets/icons/google-icon.svg",
+                       press: (){
+                         googleSignUp().then((value){
+                           Map valdetail = {
+                             "email" : value.email,
+                             "auth_id" : value.uid,
+                             "auth_from" : "google",
+                             "device_token" : "",
+                             "profile_pic" : value.photoURL
+                           };
+                           socialloginApi(valdetail).then((value){
+                             var valjson = json.decode(value.body);
+                             if(valjson["status"] == true && valjson["message"] == "Registered Successfully.."){
+                               Fluttertoast.showToast(
+                                   msg: valjson["message"],
+                                   toastLength: Toast.LENGTH_SHORT,
+                                   gravity: ToastGravity.BOTTOM,
+                                   //timeInSecForIosWeb: 1,
+                                   backgroundColor: Colors.blueGrey,
+                                   textColor: Colors.white,
+                                   fontSize: 16.0
+                               );
+                               sharedPrefSetData(valjson);
+                               Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new Home()));
+                             }else{
+                               sharedPrefSetData(valjson);
+                               Fluttertoast.showToast(
+                                   msg: "Email is Already Registered",
+                                   toastLength: Toast.LENGTH_SHORT,
+                                   gravity: ToastGravity.BOTTOM,
+                                   //timeInSecForIosWeb: 1,
+                                   backgroundColor: Colors.blueGrey,
+                                   textColor: Colors.white,
+                                   fontSize: 16.0
+                               );
+                               Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new Home()));
+
+                             }
+                           });
+                         });
+                       },
+                     ),
+                   ],
+                 ),
                  SizedBox(
-                   height: size.height * 0.03,
+                   height: size.height * 0.01,
                  ),
                  AlreadyHaveAnAccountCheck(
                    press: () {
@@ -213,6 +266,9 @@ class _BodyState extends State<Body> {
                      );
                    },
                  ),
+                 SizedBox(
+                   height: size.height * 0.02,
+                 ),
                ],
              ),
            ));
@@ -224,4 +280,21 @@ class _BodyState extends State<Body> {
          isHiddenPassword = !isHiddenPassword;
        });
      }
+
+  sharedPrefSetData(var valjson) async {
+    var spfData;
+    String Img = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b87d2841-ca20-4e28-819f-ac43f7bfe8ea/de5iyz9-7fd08074-0304-4e21-8186-3fc26f0599a9.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvYjg3ZDI4NDEtY2EyMC00ZTI4LTgxOWYtYWM0M2Y3YmZlOGVhXC9kZTVpeXo5LTdmZDA4MDc0LTAzMDQtNGUyMS04MTg2LTNmYzI2ZjA1OTlhOS5qcGcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.LcwawI1u4j1iysbvZNNc6-kE1Ot7_-TVtqin4u9m3NU";
+    String name, email, profile_pic;
+    spfData = valjson["data"];
+    print(spfData);
+    name = spfData["name"];
+    email = spfData["email"];
+    profile_pic = spfData["profile_pic"];
+    print(profile_pic);
+
+    SharedPreferences spf = await SharedPreferences.getInstance();
+    if(name != null){spf.setString("name","$name");}else{spf.setString("name","User");}
+    if(email != null){spf.setString("email","$email");}else{spf.setString("email","User@mail.com");}
+    if(profile_pic != null){spf.setString("profile_pic","$profile_pic");}else{spf.setString("profile_pic","$Img");}
+  }
 }
