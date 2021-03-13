@@ -204,7 +204,50 @@ class _BodyState extends State<Body> {
                    children: <Widget>[
                      SocialIcon(
                        iconSrc: "assets/icons/facebook-1.svg",
-                       press: (){},
+                       press: (){
+                         facebookAuth().then((val){
+                           var userData = val;
+                           var picture = userData['picture'];
+                           var pictureData = picture["data"];
+                           Map userdetail = {
+                             "email" : userData["email"],
+                             "auth_id" : userData["id"],
+                             "auth_from" : "facebook",
+                             "device_token" : "",
+                             "profile_pic" : pictureData["url"]
+                           };
+                           socialloginApi(userdetail).then((value){
+                             var valjson = json.decode(value.body);
+                             if(valjson["status"] == true && valjson["message"] == "Registered Successfully.."){
+                               Fluttertoast.showToast(
+                                   msg: valjson["message"],
+                                   toastLength: Toast.LENGTH_SHORT,
+                                   gravity: ToastGravity.BOTTOM,
+                                   //timeInSecForIosWeb: 1,
+                                   backgroundColor: Colors.blueGrey,
+                                   textColor: Colors.white,
+                                   fontSize: 16.0
+                               );
+                               sharedPrefSetData(valjson);
+                               Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new Home()));
+                             }else{
+                               sharedPrefSetData(valjson);
+                               Fluttertoast.showToast(
+                                   msg: "Email is Already Registered",
+                                   toastLength: Toast.LENGTH_SHORT,
+                                   gravity: ToastGravity.BOTTOM,
+                                   //timeInSecForIosWeb: 1,
+                                   backgroundColor: Colors.blueGrey,
+                                   textColor: Colors.white,
+                                   fontSize: 16.0
+                               );
+                               Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new Home()));
+
+                             }
+                           });
+
+                         });
+                       },
                      ),
                      SocialIcon(
                        iconSrc: "assets/icons/google-icon.svg",
